@@ -36,7 +36,17 @@ jobs:
         SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'super_secret' }}
 
     - name: Wait for server
-      run: npx wait-on http://localhost:3030 --timeout 30000
+      run: |
+        echo "Waiting for server..."
+        for i in {1..15}; do
+          curl -s http://localhost:3030 && echo "Server is up!" && exit 0
+          echo "Attempt $i failed, waiting 2s..."
+          sleep 2
+        done
+        echo "=== Server failed to start. Checking for errors ==="
+        ps aux | grep node
+        cat nohup.out 2>/dev/null || true
+        npx wait-on http://localhost:3030 --timeout 5000
 
     - name: Start test server
       run: npm run start:test
