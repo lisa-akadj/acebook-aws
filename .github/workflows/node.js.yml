@@ -35,11 +35,11 @@ jobs:
         NODE_ENV: test
         SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'super_secret' }}
 
-    - name: Start test server
-      run: npm run start:test
-
     - name: Wait for server
       run: npx wait-on http://localhost:3030 --timeout 30000
+
+    - name: Start test server
+      run: npm run start:test
 
     - name: Run Tests
       run: npm test
