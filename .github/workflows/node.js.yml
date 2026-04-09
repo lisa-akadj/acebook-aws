@@ -27,12 +27,16 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      # npm ci ensures a clean, consistent install from package-lock.json
       run: npm ci
 
-    # - name: Run Lint (Optional)
-    #   # This will only work if you have a "lint" script in your package.json
-    #   run: npm run lint --if-present
+    - name: Start server
+      run: npm start &
+      env:
+        NODE_ENV: test
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'super_secret' }}
+
+    - name: Wait for server
+      run: npx wait-on http://localhost:3030 --timeout 30000
 
     - name: Run Tests
       run: npm test
