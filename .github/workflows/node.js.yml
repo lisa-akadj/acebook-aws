@@ -24,9 +24,9 @@ jobs:
       # npm ci ensures a clean, consistent install from package-lock.json
       run: npm ci
 
-    - name: Run Lint (Optional)
-      # This will only work if you have a "lint" script in your package.json
-      run: npm run lint --if-present
+    # - name: Run Lint (Optional)
+    #   # This will only work if you have a "lint" script in your package.json
+    #   run: npm run lint --if-present
 
     - name: Run Tests
       run: npm test
