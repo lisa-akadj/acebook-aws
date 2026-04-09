@@ -21,7 +21,7 @@ jobs:
       - name: Setup Environment
         uses: actions/setup-node@v4 # Swap for setup-python or setup-go
         with:
-          node-version: '23'
+          node-version: '22'
 
       - name: Install Dependencies
         run: npm ci
