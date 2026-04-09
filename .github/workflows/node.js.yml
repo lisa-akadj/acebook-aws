@@ -10,12 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -29,31 +23,15 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Start server
-      run: npm start &
-      env:
-        NODE_ENV: test
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'super_secret' }}
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.12.1
+      with:
+        mongodb-version: 7
 
-    - name: Wait for server
-      run: |
-        echo "Waiting for server..."
-        for i in {1..15}; do
-          curl -s http://localhost:3030 && echo "Server is up!" && exit 0
-          echo "Attempt $i failed, waiting 2s..."
-          sleep 2
-        done
-        echo "=== Server failed to start. Checking for errors ==="
-        ps aux | grep node
-        cat nohup.out 2>/dev/null || true
-        npx wait-on http://localhost:3030 --timeout 5000
+    - name: unit test
+      run: npm run test:unit
 
-    - name: Start test server
-      run: npm run start:test
-
-    - name: Run Tests
-      run: npm test
-      env:
-        CI: true
-        NODE_ENV: test
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'super_secret' }}
+    - name: Cypress.io
+      uses: cypress-io/github-action@v7.1.9
+      with:
+        start: npm run start:test
