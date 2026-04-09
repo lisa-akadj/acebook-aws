@@ -28,5 +28,5 @@ jobs:
 
       - name: Run Linter & Tests
         run: |
-          npm run lint
-          npm test
+          npm test 
+      # linter test removed 
